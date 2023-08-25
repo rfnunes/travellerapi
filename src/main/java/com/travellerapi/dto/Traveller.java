@@ -7,5 +7,6 @@ public record Traveller(Long id,
                         String lastName,
                         String birthDate,
                         String emailAddress,
+                        String mobileNumber,
                         Set<Document> documentSet) {
 }
