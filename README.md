@@ -2,6 +2,10 @@
 
 This API manages the traveller's data
 
+# API Documentation
+
+The API is documented using the OpenAPI specification and can be consulted with Swagger on http://localhost:8080/swagger-ui/index.html
+
 # The traveller
 
 A traveller has the following attributes
