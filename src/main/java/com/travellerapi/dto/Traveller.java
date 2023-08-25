@@ -9,4 +9,14 @@ public record Traveller(Long id,
                         String emailAddress,
                         String mobileNumber,
                         Set<Document> documentSet) {
+
+    public Traveller withId(final long id) {
+        return new Traveller(id,
+                             firstName(),
+                             lastName(),
+                             birthDate(),
+                             emailAddress(),
+                             mobileNumber(),
+                             documentSet());
+    }
 }

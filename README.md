@@ -29,4 +29,4 @@ A traveller has the following attributes
 ## POST: Create traveller
 ## GET: Get traveller: search by email or mobile or document
 ## PUT: Update traveller
-## POST: Deactivate traveller
+## PUT: Deactivate traveller
