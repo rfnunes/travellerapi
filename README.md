@@ -34,3 +34,11 @@ A traveller has the following attributes
 ## GET: Get traveller: search by email or mobile or document
 ## PUT: Update traveller
 ## PUT: Deactivate traveller
+
+# Deployment
+
+## Usage
+
+Use gradle task bootRun to start the Springboot application, served by an embedded Tomcat server.
+
+Cluster deployment can be monitored by the Springboot actuator's health endpoint available at http://localhost:8080/actuator/health
