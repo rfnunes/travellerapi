@@ -3,6 +3,7 @@ package com.travellerapi.controller;
 import com.travellerapi.dto.TravellerDto;
 import com.travellerapi.model.DocumentType;
 import com.travellerapi.service.ITravellerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,39 +24,39 @@ public class TravellerController {
 
     @PostMapping("/traveller")
     @ResponseBody
-    public ResponseEntity<Traveller> createTraveller(@RequestBody final Traveller traveller) {
-        return ResponseEntity.ok(travellerService.createTraveller(traveller));
+    public ResponseEntity<TravellerDto> createTraveller(@Valid @RequestBody final TravellerDto travellerDto) {
+        return ResponseEntity.ok(travellerService.createTraveller(travellerDto));
     }
 
     @GetMapping("/traveller/{id}")
     @ResponseBody
-    public ResponseEntity<Traveller> getTravellerByEmail(@PathVariable final long id) {
+    public ResponseEntity<TravellerDto> getTravellerByEmail(@PathVariable final long id) {
         return ResponseEntity.ofNullable(travellerService.getTraveller(id));
     }
 
     @GetMapping("/traveller/email/{email}")
     @ResponseBody
-    public ResponseEntity<Traveller> getTravellerByEmail(@PathVariable final String email) {
+    public ResponseEntity<TravellerDto> getTravellerByEmail(@PathVariable final String email) {
         return ResponseEntity.ofNullable(travellerService.getTravellerByEmail(email));
     }
 
     @GetMapping("/traveller/mobile/{mobile}")
     @ResponseBody
-    public ResponseEntity<Traveller> getTravellerByMobile(@PathVariable final String mobile) {
+    public ResponseEntity<TravellerDto> getTravellerByMobile(@PathVariable final String mobile) {
         return ResponseEntity.ofNullable(travellerService.getTravellerByMobile(mobile));
     }
 
     @GetMapping("/traveller/document?number={number}&type={type}&country={country}")
     @ResponseBody
-    public ResponseEntity<Traveller> getTravellerByDocument(@RequestParam final DocumentType documentType,
-                                                            @RequestParam final String number,
-                                                            @RequestParam final String country) {
+    public ResponseEntity<TravellerDto> getTravellerByDocument(@RequestParam final DocumentType documentType,
+                                                               @RequestParam final String number,
+                                                               @RequestParam final String country) {
         return ResponseEntity.ok(travellerService.getTravellerByDocument(documentType, number, country));
     }
 
     @PutMapping("/traveller")
     @ResponseBody
-    public ResponseEntity<Traveller> updateTraveller(@RequestBody final Traveller traveller) {
+    public ResponseEntity<TravellerDto> updateTraveller(@RequestBody final TravellerDto travellerDto) {
         //travellerService.updateTraveller(traveller);
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
     }
