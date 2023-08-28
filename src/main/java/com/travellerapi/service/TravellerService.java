@@ -2,13 +2,14 @@ package com.travellerapi.service;
 
 import com.travellerapi.dto.TravellerDto;
 import com.travellerapi.model.DocumentType;
+import com.travellerapi.model.Traveller;
 import com.travellerapi.model.mapper.TravellerMapper;
-import com.travellerapi.model.validator.TravellerValidator;
 import com.travellerapi.repository.TravellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Date;
 
 @Service
 public class TravellerService implements ITravellerService {
@@ -19,18 +20,21 @@ public class TravellerService implements ITravellerService {
     private static final TravellerDto TRAVELLER_DTO = new TravellerDto(0L,
                                                                        "Ricardo",
                                                                        "Nunes",
-                                                                       "07/05/1978",
+                                                                       new Date(0L),
                                                                        "email@mail.com",
                                                                        "+351123456789",
                                                                        Collections.emptySet());
 
     @Override
     public TravellerDto createTraveller(final TravellerDto travellerDto) {
-        if(!TravellerValidator.isvalid(travellerDto)) {
+/*        if(!TravellerValidator.isValid(travellerDto)) {
             throw new RuntimeException(); //FIXME create a specific exception
-        }
+        }*/
+
+        final Traveller traveller = TravellerMapper.toEntity(travellerDto);
+
         return TravellerMapper.toDto(
-                travellerRepository.save(TravellerMapper.toEntity(travellerDto)));
+                travellerRepository.save(traveller));
     }
 
     @Override
@@ -40,7 +44,7 @@ public class TravellerService implements ITravellerService {
 
     @Override
     public TravellerDto getTravellerByEmail(String email) {
-        if (TRAVELLER_DTO.emailAddress().equalsIgnoreCase(email)) {
+        if (TRAVELLER_DTO.getEmailAddress().equalsIgnoreCase(email)) {
             return TRAVELLER_DTO;
         }
         return null;
@@ -48,7 +52,7 @@ public class TravellerService implements ITravellerService {
 
     @Override
     public TravellerDto getTravellerByMobile(String mobile) {
-        if (TRAVELLER_DTO.mobileNumber().equals(mobile)) {
+        if (TRAVELLER_DTO.getMobileNumber().equals(mobile)) {
             return TRAVELLER_DTO;
         }
         return null;

@@ -1,4 +1,4 @@
-package com.travellerapi.dto;
+package com.travellerapi.model;
 
 public enum DocumentType {
 
