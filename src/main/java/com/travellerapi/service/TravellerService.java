@@ -2,6 +2,7 @@ package com.travellerapi.service;
 
 import com.travellerapi.dto.TravellerDto;
 import com.travellerapi.exception.TravellerApiCreationException;
+import com.travellerapi.model.Document;
 import com.travellerapi.model.DocumentType;
 import com.travellerapi.model.Traveller;
 import com.travellerapi.model.mapper.TravellerMapper;
@@ -10,7 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 @Service
 public class TravellerService implements ITravellerService {
@@ -22,6 +27,14 @@ public class TravellerService implements ITravellerService {
     public TravellerDto createTraveller(final TravellerDto travellerDto) {
         final Traveller traveller = TravellerMapper.toEntity(travellerDto);
         traveller.setActive(true);
+
+        if(traveller.getDocumentSet().stream().filter(Document::isActive).count() > 1) {
+            final List<Document> documentList = new ArrayList<>(traveller.getDocumentSet());
+            documentList.get(0).setActive(true);
+            IntStream.range(1, documentList.size())
+                    .forEach(i -> documentList.get(i).setActive(false));
+            traveller.setDocumentSet(new HashSet<>(documentList));
+        }
 
         try {
             return TravellerMapper.toDto(

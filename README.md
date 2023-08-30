@@ -31,6 +31,9 @@ A travellerDto has the following attributes
 # API Operations
 
 ## POST: Create traveller
+
+When creating a user if several documents have the active flag set to true then the first one provided will be the single one active
+
 ## GET: Get traveller: search by email or mobile or documentDto
 ## PUT: Update traveller
 
