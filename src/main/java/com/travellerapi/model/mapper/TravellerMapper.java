@@ -1,7 +1,11 @@
 package com.travellerapi.model.mapper;
 
+import com.travellerapi.dto.DocumentDto;
 import com.travellerapi.dto.TravellerDto;
 import com.travellerapi.model.Traveller;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class TravellerMapper {
 
@@ -11,13 +15,20 @@ public final class TravellerMapper {
     }
 
     public static TravellerDto toDto(final Traveller traveller) {
+
+        final Set<DocumentDto> documentDtoSet =
+                traveller.getDocumentSet()
+                         .stream()
+                         .map(DocumentMapper::toDto)
+                         .collect(Collectors.toSet());
+
         return new TravellerDto(traveller.getId(),
                                 traveller.getFirstName(),
                                 traveller.getLastName(),
                                 traveller.getBirthDate(),
                                 traveller.getEmailAddress(),
                                 traveller.getMobileNumber(),
-                                null); //FIXME
+                                documentDtoSet);
     }
 
     public static Traveller toEntity(final TravellerDto travellerDto) {
@@ -28,8 +39,10 @@ public final class TravellerMapper {
         traveller.setBirthDate(travellerDto.getBirthDate());
         traveller.setEmailAddress(travellerDto.getEmailAddress());
         traveller.setMobileNumber(travellerDto.getMobileNumber());
-        //TODO add documents
-
+        traveller.setDocumentSet(travellerDto.getDocumentDtoSet()
+                                             .stream()
+                                             .map(DocumentMapper::toEntity)
+                                             .collect(Collectors.toSet()));
         return traveller;
     }
 }

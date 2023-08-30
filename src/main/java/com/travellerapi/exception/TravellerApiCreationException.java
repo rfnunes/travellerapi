@@ -1,6 +1,6 @@
 package com.travellerapi.exception;
 
-public class TravellerApiCreationException extends TravellerApiException{
+public class TravellerApiCreationException extends RuntimeException {
 
     private final Exception exception;
 
