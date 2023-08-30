@@ -14,7 +14,7 @@ public interface ITravellerService {
 
     TravellerDto getTravellerByDocument(DocumentType documentType, String number, String country);
 
-    boolean updateTraveller(TravellerDto travellerDto);
+    TravellerDto updateTraveller(TravellerDto travellerDto);
 
     boolean deactivateTraveller(long id);
 }
