@@ -36,27 +36,27 @@ public class TravellerController {
     @GetMapping("/traveller/{id}")
     @ResponseBody
     public ResponseEntity<TravellerDto> getTravellerByEmail(@PathVariable final long id) {
-        return ResponseEntity.ofNullable(travellerService.getTraveller(id));
+        return ResponseEntity.of(travellerService.getTraveller(id));
     }
 
     @GetMapping("/traveller/email/{email:.+}")
     @ResponseBody
     public ResponseEntity<TravellerDto> getTravellerByEmail(@PathVariable(name = "email") final String email) {
-        return ResponseEntity.ofNullable(travellerService.getTravellerByEmail(email));
+        return ResponseEntity.of(travellerService.getTravellerByEmail(email));
     }
 
     @GetMapping("/traveller/mobile/{mobile}")
     @ResponseBody
     public ResponseEntity<TravellerDto> getTravellerByMobile(@PathVariable(name = "mobile") final String mobile) {
-        return ResponseEntity.ofNullable(travellerService.getTravellerByMobile(mobile));
+        return ResponseEntity.of(travellerService.getTravellerByMobile(mobile));
     }
 
-    @GetMapping("/traveller/document?number={number}&type={type}&country={country}")
+    @GetMapping("/traveller/document")
     @ResponseBody
-    public ResponseEntity<TravellerDto> getTravellerByDocument(@RequestParam final DocumentType documentType,
-                                                               @RequestParam final String number,
-                                                               @RequestParam final String country) {
-        return ResponseEntity.ok(travellerService.getTravellerByDocument(documentType, number, country));
+    public ResponseEntity<TravellerDto> getTravellerByDocument(@RequestParam("type") final DocumentType documentType,
+                                                               @RequestParam("number") final String number,
+                                                               @RequestParam("country") final String country) {
+        return ResponseEntity.of(travellerService.getTravellerByDocument(documentType, number, country));
     }
 
     @PutMapping("/traveller")

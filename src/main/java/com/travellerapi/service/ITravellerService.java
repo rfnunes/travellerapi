@@ -3,16 +3,18 @@ package com.travellerapi.service;
 import com.travellerapi.dto.TravellerDto;
 import com.travellerapi.model.DocumentType;
 
+import java.util.Optional;
+
 public interface ITravellerService {
     TravellerDto createTraveller(TravellerDto travellerDto);
 
-    TravellerDto getTraveller(long id);
+    Optional<TravellerDto> getTraveller(long id);
 
-    TravellerDto getTravellerByEmail(String email);
+    Optional<TravellerDto> getTravellerByEmail(String email);
 
-    TravellerDto getTravellerByMobile(String mobile);
+    Optional<TravellerDto> getTravellerByMobile(String mobile);
 
-    TravellerDto getTravellerByDocument(DocumentType documentType, String number, String country);
+    Optional<TravellerDto> getTravellerByDocument(DocumentType documentType, String number, String country);
 
     TravellerDto updateTraveller(TravellerDto travellerDto);
 

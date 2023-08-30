@@ -1,5 +1,7 @@
 package com.travellerapi.repository;
 
+import com.travellerapi.dto.TravellerDto;
+import com.travellerapi.model.DocumentId;
 import com.travellerapi.model.Traveller;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -19,6 +21,9 @@ public interface TravellerRepository extends JpaRepository<Traveller, Long> {
 
     @Query("SELECT t FROM Traveller t WHERE t.mobileNumber = :mobileNumber AND t.isActive = true")
     Optional<Traveller> findByMobileNumber(@Param(value = "mobileNumber") final String mobileNumber);
+
+    @Query("SELECT t FROM Traveller t JOIN t.documentSet d WHERE d.documentId = :documentId AND d.active = true AND t.isActive = true")
+    Optional<Traveller> findByDocument(DocumentId documentId);
 
     @Transactional
     @Modifying
