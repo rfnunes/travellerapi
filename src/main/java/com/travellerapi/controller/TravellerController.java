@@ -2,8 +2,10 @@ package com.travellerapi.controller;
 
 import com.travellerapi.dto.TravellerDto;
 import com.travellerapi.model.DocumentType;
+import com.travellerapi.repository.TravellerRepository;
 import com.travellerapi.service.ITravellerService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,9 @@ public class TravellerController {
     @Autowired
     private ITravellerService travellerService;
 
+    @Autowired
+    private TravellerRepository travellerRepository;
+
     @PostMapping("/traveller")
     @ResponseBody
     public ResponseEntity<TravellerDto> createTraveller(@Valid @RequestBody final TravellerDto travellerDto) {
@@ -34,15 +39,15 @@ public class TravellerController {
         return ResponseEntity.ofNullable(travellerService.getTraveller(id));
     }
 
-    @GetMapping("/traveller/email/{email}")
+    @GetMapping("/traveller/email/{email:.+}")
     @ResponseBody
-    public ResponseEntity<TravellerDto> getTravellerByEmail(@PathVariable final String email) {
+    public ResponseEntity<TravellerDto> getTravellerByEmail(@PathVariable(name = "email") final String email) {
         return ResponseEntity.ofNullable(travellerService.getTravellerByEmail(email));
     }
 
     @GetMapping("/traveller/mobile/{mobile}")
     @ResponseBody
-    public ResponseEntity<TravellerDto> getTravellerByMobile(@PathVariable final String mobile) {
+    public ResponseEntity<TravellerDto> getTravellerByMobile(@PathVariable(name = "mobile") final String mobile) {
         return ResponseEntity.ofNullable(travellerService.getTravellerByMobile(mobile));
     }
 
@@ -57,14 +62,16 @@ public class TravellerController {
     @PutMapping("/traveller")
     @ResponseBody
     public ResponseEntity<TravellerDto> updateTraveller(@RequestBody final TravellerDto travellerDto) {
-        //travellerService.updateTraveller(traveller);
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+        return ResponseEntity.ofNullable(travellerService.updateTraveller(travellerDto));
     }
 
     @PutMapping("/traveller/deactivate/{id}")
     @ResponseBody
     public ResponseEntity<Void> deactivateTraveller(@PathVariable final long id) {
-        //travellerService.deactivateTraveller(id);
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+        if(!travellerRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        travellerService.deactivateTraveller(id);
+        return ResponseEntity.ok().build();
     }
 }

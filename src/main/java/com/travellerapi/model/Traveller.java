@@ -35,10 +35,10 @@ public class Traveller {
     @Column(nullable = false)
     private Date birthDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String emailAddress;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String mobileNumber;
 
     //@OneToOne
@@ -46,6 +46,9 @@ public class Traveller {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Document> documentSet;
+
+    @Column(nullable = false)
+    private boolean isActive;
 
     public Long getId() {
         return id;
@@ -104,19 +107,33 @@ public class Traveller {
     }
 
     @Override
+    public String toString() {
+        return "Traveller{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", birthDate=" + birthDate +
+                ", emailAddress='" + emailAddress + '\'' +
+                ", mobileNumber='" + mobileNumber + '\'' +
+                ", documentSet=" + documentSet +
+                ", isActive=" + isActive +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Traveller traveller)) return false;
-        return Objects.equals(getId(), traveller.getId()) && Objects.equals(getFirstName(),
-                                                                            traveller.getFirstName()) && Objects.equals(
-                getLastName(),
-                traveller.getLastName()) && Objects.equals(getBirthDate(),
-                                                           traveller.getBirthDate()) && Objects.equals(
-                getEmailAddress(),
-                traveller.getEmailAddress()) && Objects.equals(getMobileNumber(),
-                                                               traveller.getMobileNumber()) && Objects.equals(
-                getDocumentSet(),
-                traveller.getDocumentSet());
+        return isActive() == traveller.isActive() && Objects.equals(getId(),
+                                                                    traveller.getId()) && Objects.equals(
+                getFirstName(),
+                traveller.getFirstName()) && Objects.equals(getLastName(),
+                                                            traveller.getLastName()) && Objects.equals(
+                getBirthDate(),
+                traveller.getBirthDate()) && Objects.equals(getEmailAddress(),
+                                                            traveller.getEmailAddress()) && Objects.equals(
+                getMobileNumber(),
+                traveller.getMobileNumber()) && Objects.equals(getDocumentSet(), traveller.getDocumentSet());
     }
 
     @Override
@@ -127,19 +144,15 @@ public class Traveller {
                             getBirthDate(),
                             getEmailAddress(),
                             getMobileNumber(),
-                            getDocumentSet());
+                            getDocumentSet(),
+                            isActive());
     }
 
-    @Override
-    public String toString() {
-        return "Traveller{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", birthDate='" + birthDate + '\'' +
-                ", emailAddress='" + emailAddress + '\'' +
-                ", mobileNumber='" + mobileNumber + '\'' +
-                ", documentSet=" + documentSet +
-                '}';
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

@@ -1,15 +1,16 @@
 package com.travellerapi.service;
 
 import com.travellerapi.dto.TravellerDto;
+import com.travellerapi.exception.TravellerApiCreationException;
 import com.travellerapi.model.DocumentType;
 import com.travellerapi.model.Traveller;
 import com.travellerapi.model.mapper.TravellerMapper;
 import com.travellerapi.repository.TravellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class TravellerService implements ITravellerService {
@@ -17,59 +18,66 @@ public class TravellerService implements ITravellerService {
     @Autowired
     private TravellerRepository travellerRepository;
 
-    private static final TravellerDto TRAVELLER_DTO = new TravellerDto(0L,
-                                                                       "Ricardo",
-                                                                       "Nunes",
-                                                                       new Date(0L),
-                                                                       "email@mail.com",
-                                                                       "+351123456789",
-                                                                       Collections.emptySet());
-
     @Override
     public TravellerDto createTraveller(final TravellerDto travellerDto) {
-/*        if(!TravellerValidator.isValid(travellerDto)) {
-            throw new RuntimeException(); //FIXME create a specific exception
-        }*/
-
         final Traveller traveller = TravellerMapper.toEntity(travellerDto);
+        traveller.setActive(true);
 
-        return TravellerMapper.toDto(
-                travellerRepository.save(traveller));
+        try {
+            return TravellerMapper.toDto(
+                    travellerRepository.save(traveller));
+        } catch (Exception e) {
+            throw new TravellerApiCreationException(e);
+        }
     }
 
     @Override
-    public TravellerDto getTraveller(long id) {
+    public TravellerDto getTraveller(final long id) {
         return travellerRepository.findById(id).map(TravellerMapper::toDto).orElse(null);
     }
 
     @Override
-    public TravellerDto getTravellerByEmail(String email) {
-        if (TRAVELLER_DTO.getEmailAddress().equalsIgnoreCase(email)) {
-            return TRAVELLER_DTO;
+    public TravellerDto getTravellerByEmail(final String email) {
+        return travellerRepository.findByEmail(email).map(TravellerMapper::toDto).orElse(null);
+    }
+
+    @Override
+    public TravellerDto getTravellerByMobile(final String mobileNumber) {
+        return travellerRepository.findByMobileNumber(mobileNumber).map(TravellerMapper::toDto).orElse(null);
+    }
+
+    @Override
+    public TravellerDto getTravellerByDocument(final DocumentType documentType, final String number, final String country) {
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public TravellerDto updateTraveller(final TravellerDto travellerDto) {
+
+        final Optional<Traveller> travellerOptional =
+                travellerRepository.findByEmailAddressIgnoreCaseAndMobileNumber(travellerDto.getEmailAddress(),
+                                                                                travellerDto.getMobileNumber());
+
+        if(travellerOptional.isEmpty()) {
+            return null;
         }
-        return null;
-    }
+        else {
+            final Traveller traveller = travellerOptional.get();
+            traveller.setFirstName(travellerDto.getFirstName());
+            traveller.setLastName(travellerDto.getLastName());
+            traveller.setBirthDate(travellerDto.getBirthDate());
+            traveller.setEmailAddress(travellerDto.getEmailAddress());
+            traveller.setMobileNumber(travellerDto.getMobileNumber());
+            //TODO documents
 
-    @Override
-    public TravellerDto getTravellerByMobile(String mobile) {
-        if (TRAVELLER_DTO.getMobileNumber().equals(mobile)) {
-            return TRAVELLER_DTO;
+            return TravellerMapper.toDto(travellerRepository.save(traveller));
         }
-        return null;
     }
 
     @Override
-    public TravellerDto getTravellerByDocument(DocumentType documentType, String number, String country) {
-        return null;
-    }
-
-    @Override
-    public boolean updateTraveller(TravellerDto travellerDto) {
-        return true;
-    }
-
-    @Override
-    public boolean deactivateTraveller(long id) {
+    public boolean deactivateTraveller(final long id) {
+        travellerRepository.setTravellerInactive(id);
         return true;
     }
 }
