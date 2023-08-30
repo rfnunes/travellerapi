@@ -4,7 +4,7 @@ This API manages the travellerDto's data
 
 # API Documentation
 
-The API is documented using the OpenAPI specification and can be consulted with Swagger on http://localhost:8080/swagger-ui/index.html
+The API is documented using the OpenAPI specification and can be consulted with Swagger on http://localhost:8081/swagger-ui/index.html
 
 # The travellerDto
 
@@ -30,10 +30,13 @@ A travellerDto has the following attributes
 
 # API Operations
 
-## POST: Create travellerDto
-## GET: Get travellerDto: search by email or mobile or documentDto
-## PUT: Update travellerDto
-## PUT: Deactivate travellerDto
+## POST: Create traveller
+## GET: Get traveller: search by email or mobile or documentDto
+## PUT: Update traveller
+
+Allow update traveller info. As email, mobile and document are unique and identify the traveller only other traveller's fields can be updated
+
+## PUT: Deactivate traveller
 
 # Deployment
 
@@ -41,4 +44,4 @@ A travellerDto has the following attributes
 
 Use gradle task bootRun to start the Springboot application, served by an embedded Tomcat server.
 
-Cluster deployment can be monitored by the Springboot actuator's health endpoint available at http://localhost:8080/actuator/health
+Cluster deployment can be monitored by the Springboot actuator's health endpoint available at http://localhost:8081/actuator/health
