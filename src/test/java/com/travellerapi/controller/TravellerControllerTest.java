@@ -11,6 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -30,11 +31,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class TravellerControllerTest {
+public class TravellerControllerTest {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+
+    @Value("${api.auth.header.name}")
+    private String apiAuthHeaderName;
+
+    @Value("${api.auth.secret}")
+    private String apiAuthSecret;
 
     static {
         OBJECT_MAPPER.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
@@ -45,11 +52,57 @@ class TravellerControllerTest {
     @Autowired
     private MockMvc mvc;
 
+    @Test
+    public void createTravellerValidationTest() throws Exception {
+
+        final TravellerDto travellerDto =
+                createTravellerDto("firstName",
+                                   "lastName",
+                                   DATE_FORMAT.parse("01-01-1970"),
+                                   "admin@mail.com",
+                                   "+351210000000",
+                                   Set.of(new DocumentDto(DocumentType.ID_CARD,
+                                                          "12345",
+                                                          "PT",
+                                                          true)));
+
+        mvc.perform(MockMvcRequestBuilders.post("/traveller")
+                                          .content(asJsonString(travellerDto))
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk());
+    }
+
+    @Test
+    public void authTest_noHeader() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post("/traveller")
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void authTest_wrongAuth() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post("/traveller")
+                                          .header(apiAuthHeaderName, "wrongsecret")
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void createTravellerTest_noBody() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post("/traveller")
+                                          .header(apiAuthHeaderName, apiAuthSecret)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isNoContent());
+    }
+
+
     @ParameterizedTest
     @MethodSource
     void createTravellerValidationTest_hasError(final TravellerDto travellerDto) throws Exception {
 
         mvc.perform(MockMvcRequestBuilders.post("/traveller")
+                                          .header(apiAuthHeaderName, apiAuthSecret)
                                           .content(asJsonString(travellerDto))
                                           .contentType(MediaType.APPLICATION_JSON)
                                           .accept(MediaType.APPLICATION_JSON))
@@ -118,27 +171,6 @@ class TravellerControllerTest {
                                                 "admin@mail.com",
                                                 null,
                                                 Collections.emptySet())));
-    }
-
-    @Test
-    void createTravellerValidationTest() throws Exception {
-
-        final TravellerDto travellerDto =
-                createTravellerDto("firstName",
-                                   "lastName",
-                                   DATE_FORMAT.parse("01-01-1970"),
-                                   "admin@mail.com",
-                                   "+351210000000",
-                                   Set.of(new DocumentDto(DocumentType.ID_CARD,
-                                                          "12345",
-                                                          "PT",
-                                                          true)));
-
-        mvc.perform(MockMvcRequestBuilders.post("/traveller")
-                                          .content(asJsonString(travellerDto))
-                                          .contentType(MediaType.APPLICATION_JSON)
-                                          .accept(MediaType.APPLICATION_JSON))
-           .andExpect(status().isOk());
     }
 
     @NotNull
