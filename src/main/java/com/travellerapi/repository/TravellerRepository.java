@@ -1,6 +1,5 @@
 package com.travellerapi.repository;
 
-import com.travellerapi.dto.TravellerDto;
 import com.travellerapi.model.DocumentId;
 import com.travellerapi.model.Traveller;
 import org.springframework.data.jpa.repository.JpaRepository;

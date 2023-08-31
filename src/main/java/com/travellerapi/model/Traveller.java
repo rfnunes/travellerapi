@@ -41,9 +41,6 @@ public class Traveller {
     @Column(nullable = false, unique = true)
     private String mobileNumber;
 
-    //@OneToOne
-    //private Document activeDocument;
-
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Document> documentSet;
 
