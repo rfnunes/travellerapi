@@ -32,6 +32,8 @@ A travellerDto has the following attributes
 
 ## Usage
 
+Have a JDK >= 17 installed on your system and have the JAVA_HOME environment variable properly set. 
+
 Run the following command to start the application:
 
         ./gradlew bootRun
@@ -40,10 +42,17 @@ Cluster deployment can be monitored by the Springboot actuator's health endpoint
 
 # API Operations
 
+All API endpoints are secured for service-to-service communication, thus all requests must be performed having the following header:
+
+    Name: X-API-KEY
+    Value: test-secret
+
+The "/actuator/**" endpoints do not require the X-API-KEY header
+
 ## POST: Create traveller
 
     curl --location 'http://localhost:8081/traveller' \
-        --header 'X-API-KEY: a96b8452-8f35-4c55-8b16-65525549bfb2' \
+        --header 'X-API-KEY: test-secret' \
         --header 'Content-Type: application/json' \
         --data-raw '{
             "firstName": "firstName",
@@ -74,18 +83,19 @@ When creating a user if several documents have the active flag set to true then 
 ## GET: Find a traveller: 
 ## search by email 
 
-    curl --location 'http://localhost:8081/traveller/email/admin@mail.com'
+    curl --location 'http://localhost:8081/traveller/email/admin@mail.com' --header 'X-API-KEY: test-secret'
 
 ## search by mobile number
 
-    curl --location 'http://localhost:8081/traveller/mobile/+351210000000'
+    curl --location 'http://localhost:8081/traveller/mobile/+351210000000' --header 'X-API-KEY: test-secret'
 
 ## search by document
-    curl --location 'http://localhost:8081/traveller/document?type=ID_CARD&number=9999&country=PT'
+    curl --location 'http://localhost:8081/traveller/document?type=ID_CARD&number=9999&country=PT' --header 'X-API-KEY: test-secret'
 
 ## PUT: Update traveller
 
     curl --location --request PUT 'http://localhost:8081/traveller' \
+    --header 'X-API-KEY: test-secret' \
     --header 'Content-Type: application/json' \
     --data-raw '{
         "firstName": "Ricardo",
@@ -108,6 +118,6 @@ Allow update traveller info. As email, mobile and document are unique and identi
 
 ## PUT: Deactivate traveller
 
-    http://localhost:8081/traveller/deactivate/1
+    http://localhost:8081/traveller/deactivate/1 --header 'X-API-KEY: test-secret'
 
 The id set in the URI can be fetched by a get Traveller operation  
